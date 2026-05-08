@@ -57,6 +57,16 @@ def compute_stats(content: str) -> dict[str, int]:
     
 
 def _format_time(total_seconds: int, ts_format: TimestampFormat = TS_FORMAT) -> str:
+    """
+    Formats a duration given in seconds into a human-readable string.
+
+    Supports two output modes:
+    - SHORT: hours and minutes (seconds are ignored)
+    - FULL: hours, minutes, and seconds
+
+    The format is controlled by TimestampFormat.
+    """
+
     match ts_format:
         case TimestampFormat.SHORT:
             total_minutes = total_seconds // 60
@@ -65,6 +75,7 @@ def _format_time(total_seconds: int, ts_format: TimestampFormat = TS_FORMAT) -> 
                 return f"{hours} hrs {total_minutes % 60} min"
             else:
                 return f"{total_minutes} min"
+                
         case TimestampFormat.FULL:
             hours = total_seconds // 3600
             minutes = (total_seconds % 3600) // 60

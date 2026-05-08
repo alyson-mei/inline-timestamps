@@ -4,10 +4,21 @@ from typing import Union
 
 
 class TimestampFormat(Enum):
-    """Supported string formats for Timestamp."""
-
     FULL = "%H:%M:%S"
     SHORT = "%H:%M"
+
+    def to_regex(self) -> str:
+        match self:
+            case TimestampFormat.SHORT:
+                return r"\d{2}:\d{2}(?!:\d{2})"
+            case TimestampFormat.FULL:
+                return r"\d{2}:\d{2}:\d{2}"
+
+    @classmethod
+    def combined_regex(cls) -> str:
+        full = cls.FULL.to_regex()
+        short = cls.SHORT.to_regex()
+        return rf"(?:{full}|{short})"
 
 
 class Timestamp:

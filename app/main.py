@@ -4,6 +4,9 @@ import threading
 from pathlib import Path
 from datetime import datetime
 
+from watchdog.observers import Observer
+from watchdog.events import FileSystemEventHandler
+
 from config import (
     FILE_PATH,
     ts_regex, 
@@ -14,9 +17,8 @@ from config import (
     )
 from app.timestamp import Timestamp
 from app.stats import compute_stats, format_stats
+from app.commands import Commands, replacer
 
-from watchdog.observers import Observer
-from watchdog.events import FileSystemEventHandler
 
 last_write = 0.0
 debounce_timer = None
@@ -26,8 +28,7 @@ def file_pipeline(file_path: Path, fmt=TS_FORMAT):
     content = file_path.read_text()
     timestamp = Timestamp(datetime.now().time(), fmt)
 
-    if r"\ts" in content:
-        content = re.sub(ts_regex, str(timestamp), content)
+    content = re.sub(Commands.pattern(), lambda m: replacer(m, timestamp), content)
 
     lines = content.splitlines(keepends=True)
     sep = STATS_SEPARATOR.strip()
