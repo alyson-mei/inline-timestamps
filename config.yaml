@@ -1,5 +1,3 @@
-file_path: "/home/alyson/Applications/Obsidian/Life/Journal/2026/May/May 04, Monday.md"
+file_path: "/home/alyson/PyProjects/journal-timestamps-mvp-work/tests/test_file.md"
 ts_format: "FULL"  # SHORT or FULL
-debounce_time: 0.1
-self_write_guard: 0.3
 stats_separator: "\n---"
