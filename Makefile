@@ -1,2 +1,2 @@
 run:
-	source venv/bin/activate && python -m app.main
+	source venv/bin/activate && python -m main

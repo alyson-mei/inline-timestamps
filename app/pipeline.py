@@ -8,8 +8,8 @@ from watchdog.observers import Observer
 from watchdog.events import FileSystemEventHandler
 
 from config import (
-    FILE_PATH,
-    ts_regex, 
+    WATCH_PATHS,
+    WATCH_SUFFIXES,
     SELF_WRITE_GUARD,
     DEBOUNCE_TIME, 
     TS_FORMAT,  
@@ -24,6 +24,11 @@ last_write = 0.0
 debounce_timer = None
 
 def file_pipeline(file_path: Path, fmt=TS_FORMAT):
+    """
+    Process a single file: replace inline commands, recompute stats, write back.
+    Stats block is preserved in place if already present, appended otherwise.
+    """
+
     global last_write
     content = file_path.read_text()
     timestamp = Timestamp(datetime.now().time(), fmt)
@@ -51,22 +56,30 @@ def file_pipeline(file_path: Path, fmt=TS_FORMAT):
     file_path.write_text(main_content + stats_str)
 
 class OnSave(FileSystemEventHandler):
+    """Watchdog handler that triggers file_pipeline on eligible file saves."""
+
     def on_modified(self, event):
         global debounce_timer
 
-        if event.src_path != str(FILE_PATH):
+        path = Path(event.src_path)
+        if path.suffix not in WATCH_SUFFIXES:
             return
         if time.time() - last_write < SELF_WRITE_GUARD:
             return
         if debounce_timer:
             debounce_timer.cancel()
 
-        debounce_timer = threading.Timer(DEBOUNCE_TIME, file_pipeline, args=[FILE_PATH, TS_FORMAT])
+        debounce_timer = threading.Timer(DEBOUNCE_TIME, file_pipeline, args=[path, TS_FORMAT])
         debounce_timer.start()
 
-if __name__ == "__main__":
+def run():
+    """Start the watchdog observer and block until KeyboardInterrupt."""
     observer = Observer()
-    observer.schedule(OnSave(), path=str(FILE_PATH.parent), recursive=False)
+    for watch in WATCH_PATHS:
+        path = watch["path"]
+        if not path.exists():
+            continue
+        observer.schedule(OnSave(), path=str(path), recursive=watch["recursive"])
     observer.start()
 
     try:

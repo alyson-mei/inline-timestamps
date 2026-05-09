@@ -1,4 +1,10 @@
-file_path: "/home/alyson/Applications/Obsidian/Life/Journal/2026/May/May 09, Saturday.md"
-#file_path: "/home/alyson/PyProjects/journal-timestamps-mvp-work/tests/test_file.md"
+watch:
+  - path: "/home/alyson/Applications/Obsidian/Life/Journal"
+    recursive: true
+  - path: "/home/alyson/Applications/Obsidian/Life/Notes"
+    recursive: false
+suffixes:
+  - ".md"
+  - ".txt"
 ts_format: "FULL"  # SHORT or FULL
 stats_separator: "\n---"

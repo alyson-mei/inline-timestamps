@@ -1,13 +1,16 @@
 from enum import Enum
 from datetime import datetime, time
-from typing import Union
 
 
 class TimestampFormat(Enum):
+    """Supported time string formats."""
+
     FULL = "%H:%M:%S"
     SHORT = "%H:%M"
 
     def to_regex(self) -> str:
+        """Return a regex pattern matching this format."""
+
         match self:
             case TimestampFormat.SHORT:
                 return r"\d{2}:\d{2}(?!:\d{2})"
@@ -16,6 +19,8 @@ class TimestampFormat(Enum):
 
     @classmethod
     def combined_regex(cls) -> str:
+        """Return a regex matching either format, full takes priority."""
+
         full = cls.FULL.to_regex()
         short = cls.SHORT.to_regex()
         return rf"(?:{full}|{short})"
@@ -26,12 +31,11 @@ class Timestamp:
 
     def __init__(
         self,
-        timestamp: Union["Timestamp", datetime, time, str],
+        timestamp: "Timestamp" | datetime | time | str,
         ts_format: TimestampFormat = TimestampFormat.FULL,
     ):
-        """
-        Initialize from time, datetime, string, or Timestamp.
-        """
+        """Initialize from time, datetime, string, or Timestamp."""
+        self.value = None
         self.format = ts_format
 
         if isinstance(timestamp, Timestamp):
@@ -76,14 +80,17 @@ class Timestamp:
 
     def __str__(self):
         """Return the timestamp formatted as a string."""
+
         return self.value.strftime(self.format.value)
 
     def __repr__(self):
         """Return a debug representation."""
+
         return f"Timestamp({self.value!r})"
 
     def __eq__(self, other):
         """Compare timestamps by time value."""
+
         if isinstance(other, Timestamp):
             return self.value == other.value
         return False
@@ -92,6 +99,7 @@ class Timestamp:
         """
         Subtract another Timestamp from a given one.
         """
+
         if isinstance(other, Timestamp):
             today = datetime.today().date()
             dt1 = datetime.combine(today, self.value)

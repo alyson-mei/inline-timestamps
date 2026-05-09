@@ -1,9 +1,11 @@
 import re
 from enum import Enum
-from app.timestamp import Timestamp, TimestampFormat
+from app.timestamp import Timestamp
 
 
 class Commands(Enum):
+    """Inline commands recognized in watched files."""
+    
     TS = r"\ts"
     TD = r"\td"
     TI = r"\ti"
@@ -12,6 +14,8 @@ class Commands(Enum):
 
     @classmethod
     def pattern(cls) -> str:
+        """Return a combined regex matching all commands in priority order."""
+
         _ts = re.escape(cls.TS.value)
         _open = re.escape(cls.OPEN_SW.value)
         _close = re.escape(cls.CLOSE_SW.value)
@@ -25,6 +29,16 @@ class Commands(Enum):
 
 
 def replacer(match: re.Match, timestamp: Timestamp) -> str:
+    """
+    Replace a matched command with the appropriate output.
+
+    - \\ts \\stopwatch\\  → stamp final time, drop marker
+    - \\ts \\stopwatch    → leave as-is (session still open)
+    - \\ts                → stamp current time
+    - \\td                → open a new stopwatch session
+    - \\ti                → open a static interval
+    """
+    
     _ts = re.escape(Commands.TS.value)
     _open = re.escape(Commands.OPEN_SW.value)
     _close = re.escape(Commands.CLOSE_SW.value)

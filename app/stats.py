@@ -1,5 +1,4 @@
 import re
-from datetime import datetime, date
 
 from app.timestamp import Timestamp, TimestampFormat
 from config import ts_double_regex, TS_FORMAT
@@ -26,6 +25,16 @@ def _parse_category(line: str) -> str | None:
 
 
 def compute_stats(content: str) -> dict[str, int]:
+    """
+    Parse timestamp pairs from content and accumulate durations by category.
+
+    Categories are inferred from the nearest parent label line with less
+    indentation. Timestamps without a parent category are grouped under "".
+    Markdown headings (#) reset the current category.
+
+    Returns a dict mapping category name to total seconds.
+    """
+
     lines = content.splitlines()
     stats: dict[str, int] = {}
     current_category = ""
@@ -70,11 +79,10 @@ def _format_time(total_seconds: int, ts_format: TimestampFormat = TS_FORMAT) -> 
     match ts_format:
         case TimestampFormat.SHORT:
             total_minutes = total_seconds // 60
-            hours = total_minutes // 60 
+            hours = total_minutes // 60
             if hours > 0:
                 return f"{hours} hrs {total_minutes % 60} min"
-            else:
-                return f"{total_minutes} min"
+            return f"{total_minutes} min"
 
         case TimestampFormat.FULL:
             hours = total_seconds // 3600
@@ -84,27 +92,32 @@ def _format_time(total_seconds: int, ts_format: TimestampFormat = TS_FORMAT) -> 
                 return f"{hours} hrs {minutes} min {seconds} sec"
             elif minutes > 0:
                 return f"{minutes} min {seconds} sec"
-            else:
-                return f"{seconds} sec"
+            return f"{seconds} sec"
 
 
-def format_stats(stats: dict, indent: int = 4) -> str:
+def format_stats(stats: dict) -> str:
+    """
+    Format a stats dict into a human-readable stats block.
+
+    Named categories are listed first, uncategorized time last as "Other".
+    Duration formatting follows TS_FORMAT from config.
+    """
+
     total = sum(stats.values())
-
-    pad = " " * indent
 
     lines = [
         "---",
-        "# Statistics\n",
-        f"Total: {_format_time(total)}",
+        "# Statistics",
+        "",
+        f"- Total: {_format_time(total)}",
     ]
 
     for category, value in stats.items():
         if category == "":
             continue
-        lines.append(f"{pad}- {category}: {_format_time(value)}")
+        lines.append(f"  - {category}: {_format_time(value)}")
 
     if "" in stats:
-        lines.append(f"{pad}- Other: {_format_time(stats[''])}")
+        lines.append(f"  - Other: {_format_time(stats[''])}")
 
     return "\n".join(lines)
