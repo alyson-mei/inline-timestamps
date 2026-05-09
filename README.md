@@ -11,6 +11,27 @@ Designed for daily journaling in Obsidian, but works with any plain text workflo
 
 MVP. Experimental but usable. Core workflow is stable, edge cases and extended features are in progress. Cursor behavior is unstable in most editors, which is an inherent limitation of external file watching via Python.
 
+## Installation and Running
+
+Python 3.10+ and pip required.
+
+```bash
+git clone https://github.com/alyson-mei/inline-timestamps
+cd inline-timestamps
+make install
+```
+
+Restart your terminal for the `its` alias to take effect, then edit `config.yaml` to set your watch paths and timestamp format.
+
+
+Running:
+
+```bash
+its
+# or
+make run
+```
+
 ## Workflow
 
 ### Single: Stamping a timestamp
