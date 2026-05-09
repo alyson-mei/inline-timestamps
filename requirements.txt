@@ -1,2 +1,2 @@
-watchdog
-pyyaml
+PyYAML==6.0.3
+watchdog==6.0.0
