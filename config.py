@@ -9,10 +9,10 @@ def _load() -> dict:
 
 _cfg = _load()
 
-DEBOUNCE_TIME = 0.3
-SELF_WRITE_GUARD = 0.5
+DEBOUNCE_TIME = 0.1
+SELF_WRITE_GUARD = 0.3
+STATS_SEPARATOR = "\n---"
 
-STATS_SEPARATOR = _cfg["stats_separator"]
 TS_FORMAT = TimestampFormat[_cfg["ts_format"]]
 WATCH_PATHS = [{"path": Path(w["path"]), "recursive": w.get("recursive", False)} for w in _cfg["watch"]]
 WATCH_SUFFIXES = set(_cfg["suffixes"])

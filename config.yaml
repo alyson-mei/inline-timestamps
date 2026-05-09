@@ -7,4 +7,3 @@ suffixes:
   - ".md"
   - ".txt"
 ts_format: "FULL"  # SHORT or FULL
-stats_separator: "\n---"

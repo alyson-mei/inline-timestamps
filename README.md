@@ -11,25 +11,39 @@ Designed for daily journaling in Obsidian, but works with any plain text workflo
 
 MVP. Experimental but usable. Core workflow is stable, edge cases and extended features are in progress. Cursor behavior is unstable in most editors, which is an inherent limitation of external file watching via Python.
 
-## Installation and Running
+## Installation & Running
 
 Python 3.10+ and pip required.
 
+1. Clone the repo:
 ```bash
 git clone https://github.com/alyson-mei/inline-timestamps
 cd inline-timestamps
-make install
 ```
 
-Restart your terminal for the `its` alias to take effect, then edit `config.yaml` to set your watch paths and timestamp format.
+2. Install:
+```bash
+make install
+```
+The install sets up an `its` alias for your shell. The alias name can be changed in `Makefile` via `ALIAS_NAME`. To proceed without restarting, run `source ~/.bashrc` (or `~/.zshrc`).
 
+3. Configure `config.yaml`:
+```yaml
+watch:
+  - path: "/your/notes/folder"
+    recursive: true        # include subfolders
+  - path: "/your/other/folder"
+    recursive: false       # top-level only
+suffixes:
+  - ".md"                  # file types to watch
+  - ".txt"
+ts_format: "FULL"          # FULL: HH:MM:SS, SHORT: HH:MM
+stats_separator: "\n---"   # separator before the stats block
+```
 
-Running:
-
+4. Run:
 ```bash
 its
-# or
-make run
 ```
 
 ## Workflow
