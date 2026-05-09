@@ -7,40 +7,36 @@ class Commands(Enum):
     TS = r"\ts"
     TD = r"\td"
     TI = r"\ti"
-    OPEN = r"\open"
-    CLOSE = r"\open" + "\\"
+    OPEN_SW = r"\stopwatch"
+    CLOSE_SW = r"\stopwatch" + "\\"
 
     @classmethod
     def pattern(cls) -> str:
-        _ts = TimestampFormat.combined_regex()
-        full_open = rf"(?P<open_start>{_ts}) -> {_ts} {re.escape(cls.OPEN.value)}(?!\\)"
-        full_close = rf"(?P<close_start>{_ts}) -> {_ts} {re.escape(cls.CLOSE.value)}"
+        _ts = re.escape(cls.TS.value)
+        _open = re.escape(cls.OPEN_SW.value)
+        _close = re.escape(cls.CLOSE_SW.value)
         return "|".join([
-            full_close,
-            full_open,
-            re.escape(cls.TS.value),
+            rf"{_ts}\s+{_close}",
+            rf"{_ts}\s+{_open}(?!\\)",
+            rf"{_ts}(?!\s+{_open})",
             re.escape(cls.TD.value),
-            re.escape(cls.TI.value)
+            re.escape(cls.TI.value),
         ])
 
-# TODO: Consider freezing the last timestamp value in \td (that is, turn off the updates; they make behavior of cursor unstable)
 
 def replacer(match: re.Match, timestamp: Timestamp) -> str:
-    _ts = TimestampFormat.combined_regex()
-    full_open = rf"(?P<open_start>{_ts}) -> {_ts} {re.escape(Commands.OPEN.value)}(?!\\)"
-    full_close = rf"(?P<close_start>{_ts}) -> {_ts} {re.escape(Commands.CLOSE.value)}"
+    _ts = re.escape(Commands.TS.value)
+    _open = re.escape(Commands.OPEN_SW.value)
+    _close = re.escape(Commands.CLOSE_SW.value)
     command = match.group(0)
 
-    if command == Commands.TS.value:
+    if re.match(rf"{_ts}\s+{_close}", command):
         return str(timestamp)
+    elif re.match(rf"{_ts}\s+{_open}(?!\\)", command):
+        return command
+    elif command == Commands.TD.value:
+        return f"{timestamp} -> {Commands.TS.value} {Commands.OPEN_SW.value}"
     elif command == Commands.TI.value:
         return f"{timestamp} -> {Commands.TS.value}"
-    elif command == Commands.TD.value:
-        return f"{timestamp} -> {timestamp} {Commands.OPEN.value}"
-    elif re.match(full_close, command):
-        start = match.group("close_start")
-        return f"{start} -> {timestamp}"
-    elif re.match(full_open, command):
-        start = match.group("open_start")
-        return f"{start} -> {timestamp} {Commands.OPEN.value}"
-    return command
+    else:
+        return str(timestamp)

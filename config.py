@@ -16,8 +16,8 @@ def _fmt_to_regex(fmt: TimestampFormat) -> str:
 
 
 _cfg = _load()
-DEBOUNCE_TIME = 0.1
-SELF_WRITE_GUARD = 0.3
+DEBOUNCE_TIME = 0.3
+SELF_WRITE_GUARD = 0.5
 STATS_SEPARATOR = _cfg["stats_separator"]
 TS_FORMAT = TimestampFormat[_cfg["ts_format"]]
 
