@@ -89,4 +89,3 @@ On every save, a statistics block is appended (or updated) at the bottom of the 
 ```
 
 Sessions are grouped by category — the nearest label line above a timestamp pair with less indentation.
-```
