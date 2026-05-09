@@ -6,6 +6,7 @@ from app.timestamp import Timestamp, TimestampFormat
 class Commands(Enum):
     TS = r"\ts"
     TD = r"\td"
+    TI = r"\ti"
     OPEN = r"\open"
     CLOSE = r"\open" + "\\"
 
@@ -19,8 +20,10 @@ class Commands(Enum):
             full_open,
             re.escape(cls.TS.value),
             re.escape(cls.TD.value),
+            re.escape(cls.TI.value)
         ])
 
+# TODO: Consider freezing the last timestamp value in \td (that is, turn off the updates; they make behavior of cursor unstable)
 
 def replacer(match: re.Match, timestamp: Timestamp) -> str:
     _ts = TimestampFormat.combined_regex()
@@ -30,6 +33,8 @@ def replacer(match: re.Match, timestamp: Timestamp) -> str:
 
     if command == Commands.TS.value:
         return str(timestamp)
+    elif command == Commands.TI.value:
+        return f"{timestamp} -> {Commands.TS.value}"
     elif command == Commands.TD.value:
         return f"{timestamp} -> {timestamp} {Commands.OPEN.value}"
     elif re.match(full_close, command):

@@ -75,7 +75,7 @@ def _format_time(total_seconds: int, ts_format: TimestampFormat = TS_FORMAT) -> 
                 return f"{hours} hrs {total_minutes % 60} min"
             else:
                 return f"{total_minutes} min"
-                
+
         case TimestampFormat.FULL:
             hours = total_seconds // 3600
             minutes = (total_seconds % 3600) // 60
@@ -95,7 +95,7 @@ def format_stats(stats: dict, indent: int = 4) -> str:
 
     lines = [
         "---",
-        "# Statistics",
+        "# Statistics\n",
         f"Total: {_format_time(total)}",
     ]
 

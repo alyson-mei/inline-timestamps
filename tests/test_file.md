@@ -22,15 +22,13 @@ Coding:
 
 22:42:09
 
-
-(updates on Ctrl+S)
-
-
+Test:
+03:14:17 -> 03:14:49
 
 ---
 # Statistics
-Total: 3 hrs 6 min 29 sec
+Total: 3 hrs 7 min 1 sec
     - Coding: 53 min 56 sec
     - Korean: 15 min 0 sec
     - a line: 1 min 0 sec
-    - Other: 1 hrs 56 min 33 sec
+    - Other: 1 hrs 57 min 5 sec
