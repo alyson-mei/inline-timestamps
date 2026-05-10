@@ -9,7 +9,13 @@ Designed for daily journaling in Obsidian, but works with any plain text workflo
 
 ## Status
 
-MVP. Experimental but usable. Core workflow is stable, edge cases and extended features are in progress. Cursor behavior is unstable in most editors, which is an inherent limitation of external file watching via Python.
+MVP. Experimental but usable. Core workflow is stable, edge cases and extended features are in progress. 
+
+### Known limitations and issues
+
+- Linux only (for now)
+- Sometimes you need to reload the app, this mostly happens after certain system events
+- Cursor behavior is unstable in most editors, which is an inherent limitation of external file watching via Python
 
 ## Installation & Running
 
